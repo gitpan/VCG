@@ -4,3 +4,7 @@ Revision history for Perl extension VCG.pm.
 	- original version; created by h2xs 1.21 with options
 		-n VCG.pm
 
+0.2  Mon Feb 10 23:10:04 2003
+        - added more pod
+        - added support for vcg output
+        - made api more consistent with GraphViz
