@@ -5,7 +5,7 @@ use vars qw($AUTOLOAD $VERSION $DEBUG $program);
 
 use IPC::Run qw(run);
 
-$VERSION = '0.3';
+$VERSION = '0.5';
 $DEBUG = 0;
 $program = "xvcg";
 
@@ -17,7 +17,7 @@ VCG - Interface to the VCG graphing tool
 
 
   use VCG;
-  my $vcg = VCG->new(filename=>'resulta.vcg');
+  my $vcg = VCG->new(outfile=>'resulta.vcg');
   $vcg->add_node(title => 'aaa');
   $vcg->add_node(title => 'bbb', label='b');
   $vcg->add_node(title => 'ccc', color=>'yellow');
@@ -25,6 +25,8 @@ VCG - Interface to the VCG graphing tool
   $vcg->add_edge(source => 'aaa', target=>'bbb');
 
   $vcg->output_as_pbm('mygraph.pbm');
+
+  $vcg->output_as_ps(filename=>'mygraph.ps');
 
   my $data = $vcg->as_ppm();
   open (OUTFILE, 'outfile.ppm') or die "error $!\n";
@@ -56,14 +58,16 @@ new objects are created using the constructor method 'new'.
 
 This method accepts name attributes in the form :
 
-my $vcg = VCG->new(outfile=>'foo.ps')
+my $vcg = VCG->new(outfile=>'foo.pbm')
 
 my $vcg = VCG->new(title=>'Dia Dependancies Diagram',debug=>1);
 
 my $vcg = VCG->new();
 
-my %config = ( xmax => 700, ymax=>700, program=>'vcg', x=>30, y=>30 );
+my %config = ( xmax => 700, ymax=>700, program=>'xvcg', x=>30, y=>30 );
 my $vcg = VCG->new(%config);
+
+my $vcg = VCG->new( outfile=>'diagram.ps', landscape=>1, paper=>'tabloid', spline=>1 );
 
 =cut
 
@@ -211,26 +215,32 @@ sub AUTOLOAD {
 
   my $name = $AUTOLOAD;
   $name =~ s/.*://;   # strip fully-qualified portion
-
   return if $name =~ /DESTROY/;
 
-  my $filename = shift || $self->{outfile};
+  my $filename = shift() unless (scalar @_ % 2);
+  my %args = @_;
+  $filename ||= $args{filename};
+  $filename ||= $self->{outfile};
+
   my $vcg = $self->_get_graph();
   my $output;
 
+  my @vcg_args = ($filename);
+  push (@vcg_args,  "-scale $self->{scale}") if (defined $self->{scale}) ;
+  push (@vcg_args,  "-spline") if (defined $self->{spline}) ;
+  push (@vcg_args,  "-paper $self->{paper}") if (defined $self->{paper}) ;
+  push (@vcg_args,  "-portrait") if (defined $self->{portrait}) ;
+  push (@vcg_args,  "-landscape") if (defined $self->{landscape}) ;
+
   if ($name =~ /^as_(ps|pbm|ppm|plainvcg|vcg)/) {
     my $filetype = $1;
-
+    unshift(@vcg_args,"-$filetype".'output');
     if ($filetype eq "plainvcg") {
       $output = $vcg;
     } else {
       unlink $filename if (-f $filename);
 
-      if (defined $self->{scale}) {
-	run [$self->{program}, "-$filetype".'output', $filename, "-scale $self->{scale}", "- "], \$vcg, \$output;
-      } else {
-	run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
-      }
+      run [$self->{program}, @vcg_args , "- "], \$vcg, \$output;
 
       warn $output if ($DEBUG);
 
@@ -242,6 +252,7 @@ sub AUTOLOAD {
     }
   } elsif ($name =~ /output_as_(ps|pbm|ppm|plainvcg|vcg)$/){
     my $filetype = $1;
+    unshift(@vcg_args,"-$filetype".'output');
     if ($filetype eq "plainvcg") {
       open OUTFILE,">$filename" or die "couldn't open $filename for output : $!\n";
       print OUTFILE $vcg;
@@ -249,16 +260,12 @@ sub AUTOLOAD {
       $output = 1;
     } else {
       unlink $filename if (-f $filename);
-      if (defined $self->{scale}) {
-	run [$self->{program}, "-$filetype".'output', $filename, "-scale $self->{scale}", "- "], \$vcg, \$output;
-      } else {
-	run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
-      }
+      run [$self->{program}, @vcg_args , "- "], \$vcg, \$output;
     }
-    return $output;
   } else {
     die "Method $name not defined!";
   }
+  return $output;
 }
 
 
