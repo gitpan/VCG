@@ -5,7 +5,7 @@ use vars qw($AUTOLOAD $VERSION $DEBUG $program);
 
 use IPC::Run qw(run);
 
-$VERSION = '0.2';
+$VERSION = '0.3';
 $DEBUG = 0;
 $program = "xvcg";
 
@@ -43,7 +43,7 @@ to provide a similar interface to offer some sense of consistency.
 
 VCG is now in active development and although Graph::Writer::VCG already exists,
 this module provides a similar interface to graphviz and will be more closely tied
-into vcg as it becomes more actively developed - see James Micheal DuPonts announcement
+into vcg as it becomes more actively developed - see James Micheal DuPont's announcement
 at http://mail.gnome.org/archives/dia-list/2003-February/msg00029.html.
 
 =cut
@@ -57,8 +57,13 @@ new objects are created using the constructor method 'new'.
 This method accepts name attributes in the form :
 
 my $vcg = VCG->new(outfile=>'foo.ps')
+
 my $vcg = VCG->new(title=>'Dia Dependancies Diagram',debug=>1);
+
 my $vcg = VCG->new();
+
+my %config = ( xmax => 700, ymax=>700, program=>'vcg', x=>30, y=>30 );
+my $vcg = VCG->new(%config);
 
 =cut
 
@@ -66,9 +71,8 @@ sub new {
   my $class = shift;
   my %config = @_;
 
-  my $self = {};
+  my $self = \%config;;
   bless($self, $class);
-  $self->{config} = \%config;
   $self->{edges} = [];
   $self->{nodes} = [];
   $self->{xmax} ||= 700;
@@ -77,13 +81,15 @@ sub new {
   $self->{'y'} ||= 30;
   $self->{title} ||= "untitled";
   $self->{outfile} ||= "vcg.out";
+  $self->{program} ||= $program;
+  $self->{error} = "none - everything is fine";
 
   $DEBUG = 1 if ($config{debug});
 
   return $self;
 }
 
-=head2 add_egde
+=head2 add_edge
 
 add_edge allows you to add edges to your vcg object (edges are the lines or relationships between nodes).
 
@@ -92,6 +98,7 @@ In a Finite State Diagram, edges would represent transitions between states.
 This method accepts the source, target and colour of the edge :
 
 $vcg->add_edge( source=>'from_node', target=>'to_node');
+
 $vcg->add_edge( source=>'aaa', target=>'bbb', color=>'grey');
 
 =cut
@@ -114,7 +121,9 @@ In a Finite State Diagram, nodes would be the individual states.
 This method accepts the label, title and background colour of the node :
 
 $vcg->add_node( title=>'aaa' );
+
 $vcg->add_node( label=>'aaa' );
+
 $vcg->add_node( label=>'aaa', title=>'A', color=>'yellow' );
 
 
@@ -128,6 +137,23 @@ sub add_node {
   my $node = qq(node: { title: "$args{title}" color: $args{color} label: "$args{label}"});
   push (@{$self->{nodes}}, $node);
   return 1;
+}
+
+=head2 get_vcg_version
+
+You can get the version and copyright message as a string using the vcg object (requires vcg be installed)
+
+my $version = $vcg->get_vcg_version() or die "couldn't get version : $vcg->error() \n";
+
+
+=cut
+
+sub get_vcg_version {
+  my $self = shift;
+  my $version;
+  my $error;
+  run [$self->{program}, '-version'], \undef, \$version, \$self->{error};
+  return $version;
 }
 
 
@@ -156,19 +182,21 @@ You can access the output in any of postscript, pbm, ppm, vcg (annotated) and vc
 
 my $image_as_ppm = $vcg->as_ppm(); # string of image as formatted as ppm
 
-
-
-my $vcg_with_coords = $vcg->as_vcg();
+my $vcg_with_coords = $vcg->as_vcg(); # handy for building a pixmap or something or converting to dia xml for example
 
 =head2 output_as_ps, output_as_pbm, output_as_ppm
 
 The VCG object allows you to output straight to a file through the vcg tool in any of postscript, pbm and ppm. This functionality requires that the vcg tool be installed.
 
-
+$vcg->output_as_ps('my_diagram.ps'); # now open the file in the gimp or import into LaTeX and you can get this free Mad Scientist (TM) white coat and bunsen burner.
 
 =head2 output_as_vcg, output_as_plainvcg
 
 The VCG object also allows you to output straight to file in annotated vcg with coordinates, or plain vcg syntax. The plain syntax does not require the vcg tool to be installed.
+
+$vcg->output_as_plainvcg('compiler_graph.vcg'); # just in case you want to generate a diagram but don't have vcg installed.
+
+$vcg->output_as_vcg('compiler_graph_with_coords.vcg'); # lovely jubbly
 
 =cut
 
@@ -186,7 +214,7 @@ sub AUTOLOAD {
   return if $name =~ /DESTROY/;
 
   if ($name =~ /^(output_)?as_(ps|pbm|ppm|vcgplain|vcg)$/) {
-    my $filename = shift || $self->{config}{outfile};
+    my $filename = shift || $self->{outfile};
     my $vcg = $self->_get_graph();
     my $output;
     my $return_file = $1;
@@ -200,7 +228,7 @@ sub AUTOLOAD {
       return 1;
     }
 
-    run [$program, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
+    run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
     warn $output if ($DEBUG);
     unless ($1) {
       open (FILE,$filename) or die "unable to open $filename : $!\n";
@@ -223,6 +251,8 @@ sub AUTOLOAD {
   GraphViz perl module
 
   Graph::Writer::VCG perl module
+
+  vcg/xvcg : 
 
 =head1 AUTHOR
 
