@@ -1,0 +1,337 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH VCG 3pm "perl 5.005, patch 03" "11/Feb/2003" "User Contributed Perl Documentation"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+VCG \- Interface to the VCG graphing tool
+.SH "SYNOPSIS"
+.PP
+.Vb 5
+\&  use VCG;
+\&  my $vcg = VCG->new(filename=>'resulta.vcg');
+\&  $vcg->add_node(title => 'aaa');
+\&  $vcg->add_node(title => 'bbb', label='b');
+\&  $vcg->add_node(title => 'ccc', color=>'yellow');
+.Ve
+.Vb 1
+\&  $vcg->add_edge(source => 'aaa', target=>'bbb');
+.Ve
+.Vb 1
+\&  $vcg->output_as_pbm('mygraph.pbm');
+.Ve
+.Vb 4
+\&  my $data = $vcg->as_ppm();
+\&  open (OUTFILE, 'outfile.ppm') or die "error $!\en";
+\&  print OUTFILE $data;
+\&  close OUTFILE;
+.Ve
+.SH "DESCRIPTION"
+This module provides an interface to to the vcg graphing tool. It supports a 
+limited selection of options and file formats. The vcg graphing tool homepage 
+is currently http://rw4.cs.uni-sb.de/users/sander/html/gsvcg1.html but is being actively
+developed elsewhere.
+.PP
+This module is based on Leon Brocard's GraphViz module, it tries
+to provide a similar interface to offer some sense of consistency.
+.PP
+VCG is now in active development and although Graph::Writer::VCG already exists,
+this module provides a similar interface to graphviz and will be more closely tied
+into vcg as it becomes more actively developed \- see James Micheal DuPont's announcement
+at http://mail.gnome.org/archives/dia-list/2003-February/msg00029.html.
+.SH "METHODS"
+.Sh "new"
+new objects are created using the constructor method \*(L'new\*(R'.
+.PP
+This method accepts name attributes in the form :
+.PP
+my \f(CW$vcg\fR = \s-1VCG\s0\->\fInew\fR\|(outfile=>'foo.ps')
+.PP
+my \f(CW$vcg\fR = \s-1VCG\s0\->\fInew\fR\|(title=>'Dia Dependancies Diagram\*(R',debug=>1);
+.PP
+my \f(CW$vcg\fR = \s-1VCG\s0\->\fInew()\fR;
+.PP
+my \f(CW%config\fR = ( xmax => 700, ymax=>700, program=>'vcg\*(R', x=>30, y=>30 );
+my \f(CW$vcg\fR = \s-1VCG\s0\->\fInew\fR\|(%config);
+.Sh "add_edge"
+add_edge allows you to add edges to your vcg object (edges are the lines or relationships between nodes).
+.PP
+In a Finite State Diagram, edges would represent transitions between states.
+.PP
+This method accepts the source, target and colour of the edge :
+.PP
+$vcg->\fIadd_edge\fR\|( source=>'from_node\*(R', target=>'to_node');
+.PP
+$vcg->\fIadd_edge\fR\|( source=>'aaa\*(R', target=>'bbb\*(R', color=>'grey');
+.Sh "add_node"
+add_node allows you to add nodes to your vcg object (nodes are the things connected, while edges are the connections).
+.PP
+In a Finite State Diagram, nodes would be the individual states.
+.PP
+This method accepts the label, title and background colour of the node :
+.PP
+$vcg->\fIadd_node\fR\|( title=>'aaa\*(R' );
+.PP
+$vcg->\fIadd_node\fR\|( label=>'aaa\*(R' );
+.PP
+$vcg->\fIadd_node\fR\|( label=>'aaa\*(R', title=>'A\*(R', color=>'yellow\*(R' );
+.Sh "get_vcg_version"
+You can get the version and copyright message as a string using the vcg object (requires vcg be installed)
+.PP
+my \f(CW$version\fR = \f(CW$vcg\fR\->\fIget_vcg_version()\fR or die \*(L"couldn't get version : \f(CW$vcg\fR\->\fIerror()\fR \en\*(R";
+.Sh "as_ps, as_pbm, as_ppm, as_vcg, as_plainvcg"
+The \s-1VCG\s0 object allows you to access the output of the vcg tool directly, suitable for using with graphic libraries \- although some libraries or older versions may not be able to cope with these formats.
+.PP
+You can access the output in any of postscript, pbm, ppm, vcg (annotated) and vcg (plain) :
+.PP
+my \f(CW$image_as_ppm\fR = \f(CW$vcg\fR\->\fIas_ppm()\fR; # string of image as formatted as ppm
+.PP
+my \f(CW$vcg_with_coords\fR = \f(CW$vcg\fR\->\fIas_vcg()\fR; # handy for building a pixmap or something or converting to dia xml for example
+.Sh "output_as_ps, output_as_pbm, output_as_ppm"
+The \s-1VCG\s0 object allows you to output straight to a file through the vcg tool in any of postscript, pbm and ppm. This functionality requires that the vcg tool be installed.
+.PP
+$vcg->\fIoutput_as_ps\fR\|('my_diagram.ps'); # now open the file in the gimp or import into LaTeX and you can get this free Mad Scientist (\s-1TM\s0) white coat and bunsen burner.
+.Sh "output_as_vcg, output_as_plainvcg"
+The \s-1VCG\s0 object also allows you to output straight to file in annotated vcg with coordinates, or plain vcg syntax. The plain syntax does not require the vcg tool to be installed.
+.PP
+$vcg->\fIoutput_as_plainvcg\fR\|('compiler_graph.vcg'); # just in case you want to generate a diagram but don't have vcg installed.
+.PP
+$vcg->\fIoutput_as_vcg\fR\|('compiler_graph_with_coords.vcg'); # lovely jubbly
+.SH "SEE ALSO"
+.PP
+.Vb 1
+\&  GraphViz : http://www.graphviz.org
+.Ve
+.Vb 1
+\&  GraphViz perl module
+.Ve
+.Vb 1
+\&  Graph::Writer::VCG perl module
+.Ve
+.Vb 1
+\&  vcg/xvcg : 
+.Ve
+.SH "AUTHOR"
+Aaron Trevena <\fIaaron@droogs.org\fR>
+.SH "COPYRIGHT"
+Copyright (C) 2003, Aaron Trevena, Leon Brocard
+.PP
+This module is free software; you can redistribute it or modify it
+under the same terms as Perl itself.
+
+.rn }` ''
+.IX Title "VCG 3pm"
+.IX Name "VCG - Interface to the VCG graphing tool"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "METHODS"
+
+.IX Subsection "new"
+
+.IX Subsection "add_edge"
+
+.IX Subsection "add_node"
+
+.IX Subsection "get_vcg_version"
+
+.IX Subsection "as_ps, as_pbm, as_ppm, as_vcg, as_plainvcg"
+
+.IX Subsection "output_as_ps, output_as_pbm, output_as_ppm"
+
+.IX Subsection "output_as_vcg, output_as_plainvcg"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+
+.IX Header "COPYRIGHT"
+

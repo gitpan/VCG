@@ -75,6 +75,10 @@ sub new {
   bless($self, $class);
   $self->{edges} = [];
   $self->{nodes} = [];
+  $self->{xmax} ||= 700;
+  $self->{ymax} ||= 700;
+  $self->{'x'} ||= 30;
+  $self->{'y'} ||= 30;
   $self->{title} ||= "untitled";
   $self->{outfile} ||= "vcg.out";
   $self->{program} ||= $program;
@@ -160,14 +164,9 @@ sub _get_graph {
   my $self = shift;
   my $nodes = join ("\n",@{$self->{nodes}});
   my $edges =  join ("\n",@{$self->{edges}});
-  my $values = "";
-  foreach my $field (qw/xmax ymax x y/) {
-    $values .= "$field:$self->{$field} " if ( defined $self->{$field} );
-  }
-
   my $graph = <<end;
 graph: { title: "$self->{title}"
-$values
+xmax: $self->{xmax} ymax: $self->{ymax} x: $self->{x} y: $self->{y}
 $nodes
 $edges
 }
@@ -214,53 +213,34 @@ sub AUTOLOAD {
 
   return if $name =~ /DESTROY/;
 
-  my $filename = shift || $self->{outfile};
-  my $vcg = $self->_get_graph();
-  my $output;
+  if ($name =~ /^(output_)?as_(ps|pbm|ppm|vcgplain|vcg)$/) {
+    my $filename = shift || $self->{outfile};
+    my $vcg = $self->_get_graph();
+    my $output;
+    my $return_file = $1;
+    my $filetype = $2;
 
-  if ($name =~ /^as_(ps|pbm|ppm|plainvcg|vcg)/) {
-    my $filetype = $1;
-
-    if ($filetype eq "plainvcg") {
-      $output = $vcg;
-    } else {
-      unlink $filename if (-f $filename);
-
-      if (defined $self->{scale}) {
-	run [$self->{program}, "-$filetype".'output', $filename, "-scale $self->{scale}", "- "], \$vcg, \$output;
-      } else {
-	run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
-      }
-
-      warn $output if ($DEBUG);
-
-      open (FILE,$filename) or die "unable to open $filename : $!\n";
-      my $data = join ('',(<FILE>));
-      close FILE;
-      if (-f $filename) { unlink $filename or die "unable to remove tempory file $filename : $! \n"; }
-      $output = $data;
-    }
-  } elsif ($name =~ /output_as_(ps|pbm|ppm|plainvcg|vcg)$/){
-    my $filetype = $1;
-    if ($filetype eq "plainvcg") {
+    if ($filetype eq /vcgplain/) {
+      return $vcg unless ($1);
       open OUTFILE,">$filename" or die "couldn't open $filename for output : $!\n";
       print OUTFILE $vcg;
       close OUTFILE;
-      $output = 1;
-    } else {
-      unlink $filename if (-f $filename);
-      if (defined $self->{scale}) {
-	run [$self->{program}, "-$filetype".'output', $filename, "-scale $self->{scale}", "- "], \$vcg, \$output;
-      } else {
-	run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
-      }
+      return 1;
+    }
+
+    run [$self->{program}, "-$filetype".'output', $filename, "- "], \$vcg, \$output;
+    warn $output if ($DEBUG);
+    unless ($1) {
+      open (FILE,$filename) or die "unable to open $filename : $!\n";
+      my $data = join ('',(<FILE>));
+      close FILE;
+      return $data;
+      unlink $filename or die "unable to remove tempory file $filename : $! \n";
     }
     return $output;
-  } else {
-    die "Method $name not defined!";
   }
+  die "Method $name not defined!";
 }
-
 
 ##########################################################################
 
@@ -272,7 +252,7 @@ sub AUTOLOAD {
 
   Graph::Writer::VCG perl module
 
-  vcg/xvcg : man pages
+  vcg/xvcg : 
 
 =head1 AUTHOR
 

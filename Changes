@@ -16,3 +16,7 @@ Revision history for Perl extension VCG.pm.
 would never be used again
         - added optional program name to constructor
 
+0.4 Tues Feb 18 23:29:01 2003
+	- fixed many bugs in output (now works when called by autodia)
+	- added scale option for constructor (needed by autodia)
+	- less tidyness more workingness
